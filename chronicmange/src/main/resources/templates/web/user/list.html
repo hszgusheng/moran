@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>账号列表</title>
+    <link href="layui/css/layui.css" rel="stylesheet">
+</head>
+<body>
+<blockquote class="layui-elem-quote">
+    账号列表
+</blockquote>
+<div style="padding: 16px;">
+    <table class="layui-hide" id="test" lay-filter="test"></table>
+</div>
+<script src="layui/layui.js"></script>
+<script type="text/html" id="barDemo">
+<div class="layui-clear-space">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+</div>
+</script>
+<script>
+    layui.use(['table'], function(){
+        var table = layui.table;
+        // 创建渲染实例
+        table.render({
+                elem: '#test',
+                url:'/user/listPage', // 此处为静态模拟数据，实际使用时需换成真实接口
+          //  height: 'full-35', // 最大高度减去其他容器已占有的高度差
+           // css: [ // 重设当前表格样式
+           //     '.layui-table-tool-temp{padding-right: 145px;}'
+          //  ].join(''),
+            method:"post",
+            cellMinWidth: 80,
+            page: true,
+            cols: [
+                [
+                    {field:'id', fixed: 'left', width:80, title: 'ID', sort: true},
+                    {field:'username', title: '用户登录名'},
+                    {field:'status',  title: '状态',templet:function(d){
+                        return ['正常','禁用'][d.status]
+                        }},
+                    {field:'name',  title: '用户姓名'},
+                    {field:'role', title: '用户角色',templet:function(d){return ['管理员','普通账户'][d.status]
+                        }},
+                    {fixed:'right',title:'操作',width:134,minWidth:125,toolbar:'#barDemo'}
+                    ]
+                        ],
+            parseData: function(res){ // res 即为原始返回的数据
+                    console.log(res);
+                return {
+                    "code": res.code, // 解析接口状态
+                    "msg": res.msg, // 解析提示文本
+                    "count": res.res.total, // 解析数据长度
+                    "data": res.res.records // 解析数据列表
+                };
+            },
+            error: function(res, msg){
+                console.log(res, msg)
+            }
+        });
+        table.on('tool(test)',function(obj){
+            if(obj.event==='edit'){
+                layer.open({
+                    title:'编辑',
+                    type:2,
+                    area:['80%','80%'],
+                    content:'user/edit?id='+obj.data.id,
+                    end:function(){
+                        table.reload("test");
+                    }
+                })
+            }
+        })
+    });//修改
+
+    </script>
+</body>
+</html>

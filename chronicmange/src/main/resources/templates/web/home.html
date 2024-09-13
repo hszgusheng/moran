@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Data</title>
+</head>
+<body>
+<div id="container" style="height:800px">
+    <script type="text/javascript" src="echarts/echarts.js"></script>
+    <script type="text/javascript">
+        var dom = document.getElementById('container');
+        var myChart = echarts.init(dom, null, {
+            renderer: 'canvas',
+            useDirtyRect: false
+        });
+        var app = {};
+
+        var option;
+
+        option = {
+            title: {
+                text: '各年龄段档案占比',
+                left: 'center'
+            },
+            tooltip: {
+                trigger: 'item'
+            },
+            legend: {
+                orient: 'vertical',
+                left: 'left'
+            },
+            series: [
+                {
+                    name: 'Access From',
+                    type: 'pie',
+                    radius: '50%',
+                    data: [
+                      //  { value: 1500, name: '80岁以上' },
+                        //{ value: 1000, name: '75~80岁' },
+                       // { value: 180, name: '65~70岁' },
+                    ],
+                    emphasis: {
+                        itemStyle: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    }
+                }
+            ]
+        };
+
+        if (option && typeof option === 'object') {
+            myChart.setOption(option);
+        }
+
+        window.addEventListener('resize', myChart.resize);
+
+        $.ajax({
+            url:'/getData',//地址/开头是接口，直接写是页面
+            type:'get',
+            //data:data,
+            dataType:'json',
+            success:function(res){
+                //加载动态数据
+                option.series[0].data=res.res;
+                myChart.setOption(option);
+            },
+            error:function(res){
+
+
+            }
+        })
+    </script>
+</body>
+</html>

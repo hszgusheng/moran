@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>用户编辑</title>
+    <link rel="stylesheet" href = "/layui/css/layui.css">
+</head>
+<body>
+<blockquote class="layui-elem-quote">
+    用户编辑
+</blockquote>
+<!--表单-->
+<form class="layui-form">
+    <div class="layui-form-item"  style="display: none">
+        <label class="layui-form-label">ID：</label>
+        <div class="layui-inline">
+            <input type="text" name="id" th:value="${userInfo.id}" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item" style="display: none">
+        <label class="layui-form-label">用户名：</label>
+        <div class="layui-inline">
+            <input type="text" name="username" th:value="${userInfo.username}" placeholder="请输入用户名" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item" style="display: none">
+        <label class="layui-form-label">密码：</label>
+        <div class="layui-inline">
+            <input type="password" name="password" th:value="${userInfo.password}" placeholder="请输入密码" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">姓名：</label>
+        <div class="layui-inline">
+            <input type="text" name="name" th:value="${userInfo.name}" placeholder="请输入医生姓名" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">状态：</label>
+        <input type="radio" name="status" value="0" title="正常">
+        <input type="radio" name="status" value="1" title="禁用">
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">角色：</label>
+        <input type="radio" name="role" value="0" title="管理员">
+        <input type="radio" name="role" value="1" title="普通医生">
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="userEdit">提交</button>
+        </div>
+    </div>
+</form>
+<script src="/layui/layui.js"></script>
+<script>
+    //JS
+    layui.use(['form'], function(){
+        var form = layui.form;
+        $ = layui.$;//全局变量
+        //单选框选择
+        var status = [[ ${userInfo.status} ]];
+        var role = [[ ${userInfo.role} ]];
+        $('input[name="status"][value='+status+']').attr('checked','checked');
+        $('input[name="role"][value='+role+']').attr('checked','checked');
+
+        //表单渲染
+        form.render();
+        // 提交事件
+        form.on('submit(userEdit)', function(data){
+            var field = data.field; // 获取表单字段值
+            // 此处可执行 Ajax 等操作
+            $.ajax({
+                url:'/user/edit',
+                type:'post',
+                data:field,
+                dataType:'json',
+                success:function(res){
+                    if(res.code == 200){
+                        parent.layer.msg("修改成功");
+                        //关闭窗口
+                        parent.layer.closeAll('iframe');
+                    }else{
+                        layer.msg(res.msg);
+                    }
+
+
+                },
+                error:function () {
+                    layer.msg("请求失败")
+                }
+            });
+            return false; // 阻止默认 form 跳转
+        });
+    });
+</script>
+</body>
+</html>

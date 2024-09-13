@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>档案列表</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="layui/css/layui.css" rel="stylesheet">
+</head>
+<body>
+<blockquote class="layui-elem-quote">
+    档案列表
+</blockquote>
+<div style="padding: 16px;">
+    <table class="layui-hide" id="test1" lay-filter="test1"></table>
+</div>
+<script src="layui/layui.js"></script>
+<script type="text/html" id="barDemo">
+    <div class="layui-clear-space">
+        <a class="layui-btn layui.btn-xs" lay-event="edit">编辑</a>
+    </div>
+</script>
+<script>
+    layui.use(['table'],function(){
+        var table=layui.table;
+        table.render({
+            elem:'#test1',
+            url:'/rhr/listPage',
+            method:"post",
+            cellMinWidth:80,
+            page:true,
+            cols:[
+                [
+                    {field:'id',fixed:'left',width:80,title:'ID',sort:true},
+                    {field:'name',title:'用户登录名'},
+                    {field:'age',title:'用户年龄'},
+                    {field:'gender',title:'用户性别',templet:function(d){
+                        return ['未知','男','女'][d.gender]
+                        }},
+                    {field:'diseaseHis',title:'所患疾病'},
+                    {field:'createTime',title:'就诊时间'}
+                ]
+            ],
+            parseData:function(res){
+                console.log(res);
+                return {
+                    "code": res.code,
+                    "msg": res.msg,
+                    "count": res.res.total,
+                    "data": res.res.records
+                };
+            },
+            error:function(res,msg){
+                console.log(res.msg)
+            }
+        });
+    })
+</script>
+</body>
+</html>

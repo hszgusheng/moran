@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>修改密码</title>
+</head>
+<body>
+<form class="layui-form">
+    <div class="layui-form-item">
+        <label class="layui-form-label">旧密码</label>
+        <div class="layui-input-block">
+            <input type="password" name="password" placeholder="请输入" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">新密码</label>
+        <div class="layui-input-block">
+            <input type="password" name="newPassword" placeholder="请输入" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">确认密码</label>
+        <div class="layui-input-block">
+            <input type="password" name="rePassword" placeholder="请输入" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button type="submit" class="layui-btn" lay-submit lay-filter="modifiedPwd">提交</button>
+        </div>
+    </div>
+</form>
+<script src="/layui/layui.js"></script>
+<script>
+    layui.use(['form'],function(){
+        var form=layui.form;
+        var layer=layui.layer;
+        $=layui.$;
+        form.on('submit(modifiedPwd)',function (data) {
+        var field=data.field;
+debugger
+            $.ajax({
+                url:'/user/modifiedPwd',
+                type:'post',
+                data:field,
+                dataType:'json',
+                success:function(res){
+                    if(res.code==200){
+                        window.location.href="login";
+                    }else{
+                        layer.msg(res.msg);
+                    }
+                },
+                error:function (res) {
+                    layer.msg(res.msg);
+                }
+
+            })
+            return false;
+        });
+        }
+
+    )
+
+
+</script>
+</body>
+</html>
